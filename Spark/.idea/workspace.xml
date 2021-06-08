@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="5120b904-6555-4f28-9d7c-87a96ca4e14d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/.idea/Spark.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/scala_compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/input/word.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/src/main/resources/log4j.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BigData/Spark/SparkAPI/src/main/scala/sugon/commoncase/WordCount.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/临时/FlinkTutorial/.idea/libraries/scala_sdk_2_12_8.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/临时/FlinkTutorial/src/main/java/com/boe/wc/StreamWordCount.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/临时/FlinkTutorial/src/main/java/com/boe/wc/WordCountBatch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/临时/FlinkTutorial/src/test/java/Long2String.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hudi/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/hudi/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/FlinkTutorial.iml" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/FlinkTutorial.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/src/main/resources/words.txt" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/src/main/resources/words.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/src/main/scala/com/boe/examples/StreamingWordCount.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/src/main/scala/com/boe/examples/WordCount.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/target/FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/FlinkTutorial-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/target/FlinkTutorial-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/analysis/compile" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/target/analysis/compile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/StreamingWordCount$$anon$1$$anon$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/StreamingWordCount$$anon$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/StreamingWordCount$$anon$2$$anon$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/StreamingWordCount$$anon$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/StreamingWordCount$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/StreamingWordCount.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/WordCount$$anon$1$$anon$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/WordCount$$anon$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/WordCount$$anon$2$$anon$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/WordCount$$anon$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/WordCount$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/com/boe/examples/WordCount.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/words.txt" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/target/classes/words.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/临时/FlinkTutorial/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/临时/FlinkTutorial/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/BigData" />
+  </component>
+  <component name="ProjectId" id="1tdnPKTj9VQtmQmYL6XMwi3jYUH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5120b904-6555-4f28-9d7c-87a96ca4e14d" name="Default Changelist" comment="" />
+      <created>1623107810851</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1623107810851</updated>
+    </task>
+    <servers />
+  </component>
+</project>
