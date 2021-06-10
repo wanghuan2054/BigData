@@ -247,32 +247,3 @@ FROM t_enum
 └───────┘
 # 如果尝试保存任何其他值，ClickHouse 抛出异常
 ```
-
-### ClickHouse CLI 查询
-
-```shell
-[root@node2 ClickHouse]# ./ClickHouse-cli.sh
-ClickHouse:sugon> select * from student;
-Query 20210603_033037_00002_8jmta failed: ClickHouse server is still initializing
-
-ClickHouse:sugon> select * from student;
-    id     | name
------------+------
- 1001 ss1  | NULL
- 1002 ss2  | NULL
- 1003 ss3  | NULL
-
-# 查询hive 中的库 有一点点不同，hivesql中的database，在这里叫schema。所以查看数据库时，就得用show schemas;
-ClickHouse:sugon> show schemas;
-       Schema
---------------------
- boe
- default
- information_schema
- sugon
-(4 rows)
-
-Query 20210603_041611_00006_8jmta, FINISHED, 1 node
-Splits: 19 total, 19 done (100.00%)
-0:00 [4 rows, 53B] [8 rows/s, 108B/s]
-```
