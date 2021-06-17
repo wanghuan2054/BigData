@@ -20,10 +20,10 @@ object HudiAPI {
     ssc.hadoopConfiguration.set("dfs.nameservices", "myhadoop")
     // 设置Log Console输出量
     ssc.setLogLevel("ERROR")
-    //    hudiInsertData(sparkSession)
-    //    queryHudiData(sparkSession)
-    hudiUpdateData(sparkSession)
-    queryHudiData(sparkSession)
+        hudiInsertData(sparkSession)
+        queryHudiData(sparkSession)
+//    hudiUpdateData(sparkSession)
+//    queryHudiData(sparkSession)
     //    incrQueryHudiData(sparkSession)  // 增量查询hudi数据
     //     rangeQueryHudiData(sparkSession)
     //    deleteDataByRK(sparkSession)
