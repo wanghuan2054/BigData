@@ -148,11 +148,11 @@ mvn clean package -DskipTests -Dspark3
 hadoop 3.1.1 
 zookeeper 3.4.6
 hive 3.1.0
-hbase 2.1.7 1.2.3
+hbase 2.1.7 
 spark 2.3.4
 kafka 2.4.1
 
-presto  ？
+presto  不需要指定版本
 
 修改源码中POM文件中的对应组件Version ， 尽量和上述版本一致
 
@@ -160,7 +160,7 @@ presto  ？
 <!-- 修改如下组件版本即可 ，其余保持不动-->
 <properties>
     <kafka.version>2.4.1</kafka.version>
-    <hadoop.version>3.1.1</hadoop.version>
+    <hadoop.version>3.1.3</hadoop.version>
     <hive.version>3.1.0</hive.version>
     <spark2.version>2.3.4</spark2.version>
     <spark3.version>3.0.0</spark3.version>
@@ -170,7 +170,7 @@ presto  ？
 再次执行打包命令
 
 ```
-mvn clean package -DskipTests
+mvn clean package -DskipTests -Dspark3
 ```
 
 ### **mvn 报错**
@@ -249,4 +249,12 @@ POM 文件注释报错的相关模块
     <module>packaging/hudi-flink-bundle</module>
   </modules>
 ```
+
+#### 3. Failure to find org.glassfish:javax.el:pom:3.0.1-b06-SNAPSHOT in 
+
+### **解决办法**
+
+找到本地maven仓库 ： C:\Users\49921\.m2\repository\org\glassfish\javax.el\3.0.1-b11-SNAPSHOT
+
+把pom.lastupdate文件名修改成.pom ， 每一个版本下的SNAPSHOT名字都要改，然后idea 重新导包
 
