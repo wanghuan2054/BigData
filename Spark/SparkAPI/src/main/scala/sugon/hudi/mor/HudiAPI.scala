@@ -1,4 +1,4 @@
-package sugon.hudi.cow
+package sugon.hudi.mor
 
 import org.apache.hudi.DataSourceReadOptions.{BEGIN_INSTANTTIME_OPT_KEY, END_INSTANTTIME_OPT_KEY, QUERY_TYPE_INCREMENTAL_OPT_VAL, QUERY_TYPE_OPT_KEY}
 import org.apache.hudi.DataSourceWriteOptions._
@@ -8,7 +8,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.sql.functions.{col, concat_ws, lit}
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
-object Hudi_Hive_API {
+object HudiAPI {
   def main(args: Array[String]): Unit = {
     System.setProperty("HADOOP_USER_NAME", "root")
     val sparkConf = new SparkConf().setAppName("hudi_data_import")
@@ -20,12 +20,12 @@ object Hudi_Hive_API {
     ssc.hadoopConfiguration.set("dfs.nameservices", "myhadoop")
     // 设置Log Console输出量
     ssc.setLogLevel("ERROR")
-    hudiInsertData(sparkSession)
-    queryHudiData(sparkSession)
-    //    hudiUpdateData(sparkSession)
+    //    hudiInsertData(sparkSession)
     //    queryHudiData(sparkSession)
-    //    incrQueryHudiData(sparkSession)  // 增量查询hudi数据
-    //     rangeQueryHudiData(sparkSession)
+    hudiUpdateData(sparkSession)
+    queryHudiData(sparkSession)
+    //    incrQueryHudiData(sparkSession) // 增量查询hudi数据
+    //    rangeQueryHudiData(sparkSession)
     //    deleteDataByRK(sparkSession)
   }
 
@@ -34,34 +34,29 @@ object Hudi_Hive_API {
     // 生成提交时间
     val commitTime = System.currentTimeMillis().toString
     // 生成Hudi表的表名
-    val tableName = "hudi_cow_table"
+    val tableName = "hudi_mor_table"
     // hudi 表的存储目录
-    val hdfsPath = "/hudi/hudi_hive_table"
+    val hdfsPath = "/hudi/hudi_mor_table"
     // hdfs 路径
     val df = sparkSession.read.json("/tmp/people.json")
     df.createOrReplaceTempView("people")
     val sqlDF = sparkSession.sql("SELECT country , city , id , name , age FROM people")
     val dfResult = sqlDF
       .withColumn("ts", lit(commitTime))
-      //      .withColumn("uuid", col("id")) // 依据uuid 列进行upsert判断
+      .withColumn("uuid", col("id")) // 依据uuid 列进行upsert判断
       .withColumn("partitionpath", concat_ws("/", col("country"), col("city"))) // 增加hudi的分区路径字段
-    print(dfResult.show())
+    //    print(dfResult.show())
 
     dfResult.write
       .format("org.apache.hudi") // 设置输出格式为hudi
       // 根据实际vcore 设置，会加快insert 和 upsert 速度
       .option("hoodie.insert.shuffle.parallelism", 8)
       .option("hoodie.upsert.shuffle.parallelism", 8)
-      .option(TABLE_TYPE_OPT_KEY, MOR_TABLE_TYPE_OPT_VAL) // 指定表为MOR表， 默认为COW
+      .option(TABLE_TYPE_OPT_KEY, "MERGE_ON_READ")
       .option(RECORDKEY_FIELD_OPT_KEY, "id") // 设置主键列名
-      .option(PRECOMBINE_FIELD_OPT_KEY, "ts") // 数据更细时间戳
-      .option(PARTITIONPATH_FIELD_OPT_KEY, "partitionpath") // 分区列
+      .option(PRECOMBINE_FIELD_OPT_KEY, "ts")
+      .option(PARTITIONPATH_FIELD_OPT_KEY, "partitionpath")
       .option(HoodieWriteConfig.TABLE_NAME, tableName)
-      .option(HIVE_URL_OPT_KEY, "jdbc:hive2://node1:10000") // hiveserver2 地址
-      .option(HIVE_DATABASE_OPT_KEY, "sugon") // Hudi 同步到Hive的哪个数据库
-      .option(HIVE_TABLE_OPT_KEY, "hudi_hive") // Hudi 同步到Hive的哪个表
-      .option(HIVE_PARTITION_FIELDS_OPT_KEY, "partitionpath") // Hive 表同步的分区列
-      //      .option(HIVE_PARTITION_EXTRACTOR_CLASS_OPT_KEY,classof[MultiPartKeysValueExtractor].getName)
       .mode(SaveMode.Overwrite)
       .save(hdfsPath)
   }
@@ -69,7 +64,7 @@ object Hudi_Hive_API {
   // 读取hudi数据
   def queryHudiData(sparkSession: SparkSession): Unit = {
     val df = sparkSession.read.format("hudi")
-      .load("/hudi/hudi_hive_table/*/*")
+      .load("/hudi/hudi_mor_table/*/*")
     df.createOrReplaceTempView("hudi_people")
     //    print(sparkSession.sql("select * from hudi_people where country='China'").show())
     print(sparkSession.sql("select * from hudi_people order by id").show())
@@ -80,13 +75,15 @@ object Hudi_Hive_API {
     // 生成提交时间
     val commitTime = System.currentTimeMillis().toString
     // 生成Hudi表的表名
-    val tableName = "hudi_cow_table"
+    val tableName = "hudi_mor_table"
     // hudi 表的存储目录
-    val hdfsPath = "/hudi/hudi_table"
+    val hdfsPath = "/hudi/hudi_mor_table"
     // hdfs 路径
     val df = sparkSession.read.json("/tmp/newpeople.json")
     df.createOrReplaceTempView("people")
     val sqlDF = sparkSession.sql("SELECT country , city , id , name , age FROM people")
+    println(commitTime)
+    println(lit(commitTime))
     val dfResult = sqlDF.withColumn("ts", lit(commitTime))
       .withColumn("uuid", col("id")) // 依据uuid 列进行upsert判断
       .withColumn("partitionpath", concat_ws("/", col("country"), col("city"))) // 增加hudi的分区路径字段
@@ -97,6 +94,7 @@ object Hudi_Hive_API {
       // 根据实际vcore 设置，会加快insert 和 upsert 速度
       .option("hoodie.insert.shuffle.parallelism", 8)
       .option("hoodie.upsert.shuffle.parallelism", 8)
+      .option(TABLE_TYPE_OPT_KEY, "MERGE_ON_READ")
       .option(RECORDKEY_FIELD_OPT_KEY, "uuid") // 设置主键列名
       .option(PRECOMBINE_FIELD_OPT_KEY, "ts")
       .option(PARTITIONPATH_FIELD_OPT_KEY, "partitionpath")
@@ -108,11 +106,11 @@ object Hudi_Hive_API {
   // 增量读取hudi数据
   def incrQueryHudiData(sparkSession: SparkSession): Unit = {
     // 生成Hudi表的表名
-    val tableName = "hudi_cow_table"
+    val tableName = "hudi_mor_table"
     // hudi 表的存储目录
-    val hdfsPath = "/hudi/hudi_table"
+    val hdfsPath = "/hudi/hudi_mor_table"
     val df = sparkSession.read.format("hudi")
-      .load("/hudi/hudi_table/*/*")
+      .load("/hudi/hudi_mor_table/*/*")
       .createOrReplaceTempView("hudi_people")
     //    print(sparkSession.sql("select * from hudi_people where country='China'").show())
     implicit val encoder = org.apache.spark.sql.Encoders.STRING
@@ -136,9 +134,9 @@ object Hudi_Hive_API {
   def rangeQueryHudiData(sparkSession: SparkSession): Unit = {
     implicit val encoder = org.apache.spark.sql.Encoders.STRING
     // hudi 表的存储目录
-    val hdfsPath = "/hudi/hudi_table"
+    val hdfsPath = "/hudi/hudi_mor_table"
     val df = sparkSession.read.format("hudi")
-      .load("/hudi/hudi_table/*/*")
+      .load("/hudi/hudi_mor_table/*/*")
       .createOrReplaceTempView("hudi_people")
     //    print(sparkSession.sql("select * from hudi_people where country='China'").show())
 
@@ -157,14 +155,14 @@ object Hudi_Hive_API {
       load(hdfsPath);
     //    incViewDF.registerTempTable("hudi_incr_table")
     incViewDF.createOrReplaceTempView("hudi_incr_table")
-    print(sparkSession.sql("select  * from  hudi_incr_table").show())
+    print(sparkSession.sql("select  * from  hudi_incr_table order by id").show())
   }
 
   // 删除指定RecordKey的数据
   def deleteDataByRK(sparkSession: SparkSession): Unit = {
     implicit val encoder = org.apache.spark.sql.Encoders.STRING
     // hudi 表的存储目录
-    val hdfsPath = "/hudi/hudi_table"
+    val hdfsPath = "/hudi/hudi_cow_table"
     // 生成Hudi表的表名
     val tableName = "hudi_cow_table"
     //    val df = sparkSession.read.format("hudi")

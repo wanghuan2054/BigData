@@ -490,7 +490,7 @@ MVN 公共仓库：
 [ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:1.6.0:exec (Setup HUDI_WS) on project hudi-integ-test: Command execution failed.: Cannot run program "\bin\bash" (in directory "C:\Users\49921\Desktop\hudi-release-0.8.0\hudi-release-0.8.0\hudi-integ-test"): CreateProcess error=2, 系统找不到指定的文件。 -> [Help 1]
 ```
 
-### **解决办法**
+**解决办法**
 
 POM 文件注释报错的相关模块
 
@@ -523,9 +523,191 @@ POM 文件注释报错的相关模块
 
 #### 3. Failure to find org.glassfish:javax.el:pom:3.0.1-b06-SNAPSHOT in 
 
-### **解决办法**
+**解决办法**
 
 找到本地maven仓库 ： C:\Users\49921\.m2\repository\org\glassfish\javax.el\3.0.1-b11-SNAPSHOT
 
 把pom.lastupdate文件名修改成.pom ， 每一个版本下的SNAPSHOT名字都要改，然后idea 重新导包
+
+## Hudi 集成Hive
+
+1. 将hudi-hadoop-mr-bundle-0.8.0.jar 拷贝到 Hive lib下
+
+```shell
+[root@node1 ~]# scp hudi-hadoop-mr-bundle-0.8.0.jar /opt/software/hive-3.1.2/lib/
+```
+
+2. 重启Hive服务 
+
+   HiveServer2 和  HiveMetastore 两个服务
+
+```shell
+[root@node1 hive]# /home/hive/hiveservices.sh restart
+[root@node1 hive]# /home/hive/hiveservices.sh status
+node1 Metastore服务运行正常
+node1 HiveServer2服务运行异常
+
+# 查看进程也可以确定是否服务重启成功
+[root@node1 hive]# ps -ef | grep hive
+```
+
+3. 进入Hive Client
+
+```shell
+[root@node1 hive-3.1.2]# /opt/software/hive-3.1.2/bin/hive
+```
+
+POM.XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>SparkAPI</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+       <!--  Spark 3.0 集成Hudi 0.8 -->
+        <scala.version>2.12</scala.version>
+        <scala.binary.version>2.12.12</scala.binary.version>
+        <spark.version>3.0.0</spark.version>
+        <hoodie.version>0.8.0</hoodie.version>
+        <hadoop.version>3.1.3</hadoop.version>
+        <hive.version>3.1.2</hive.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-common</artifactId>
+            <version>${hoodie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hive-bundle</artifactId>
+            <version>1.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-spark3-bundle_${scala.version}</artifactId>
+            <version>${hoodie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-hadoop-mr-bundle</artifactId>
+            <version>${hoodie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-hive-sync-bundle</artifactId>
+            <version>${hoodie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-avro_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+      </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>${hive.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-exec</artifactId>
+            <version>${hive.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spark-project.hive</groupId>
+            <artifactId>hive-serde</artifactId>
+            <version>1.2.1.spark2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- 该插件将scala代码编译成class文件 -->
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
 
