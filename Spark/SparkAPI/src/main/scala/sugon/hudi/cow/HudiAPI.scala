@@ -20,13 +20,14 @@ object HudiAPI {
     ssc.hadoopConfiguration.set("dfs.nameservices", "myhadoop")
     // 设置Log Console输出量
     ssc.setLogLevel("ERROR")
-    hudiInsertData(sparkSession)
-    queryHudiData(sparkSession)
+    //    hudiInsertData(sparkSession)
+    //    queryHudiData(sparkSession)
     //    hudiUpdateData(sparkSession)
     //    queryHudiData(sparkSession)
     //    incrQueryHudiData(sparkSession) // 增量查询hudi数据
     //     rangeQueryHudiData(sparkSession)
-    //    deleteDataByRK(sparkSession)
+    deleteDataByRK(sparkSession)
+    queryHudiData(sparkSession)
   }
 
   // 读取hdfs 文件，写入hudi
@@ -164,24 +165,31 @@ object HudiAPI {
     val hdfsPath = "/hudi/hudi_cow_table"
     // 生成Hudi表的表名
     val tableName = "hudi_cow_table"
-    //    val df = sparkSession.read.format("hudi")
-    //      .load("/hudi/hudi_table/*/*")
-    //      .createOrReplaceTempView("hudi_cow_table")
+    val df = sparkSession.read.format("hudi")
+      .load("/hudi/hudi_cow_table/*/*")
+    df.createOrReplaceTempView("hudi_cow_table")
     // 获取记录总数
     //    val cnt = sparkSession.sql("select uuid, partitionpath from hudi_cow_table group by uuid having count(*) > 1 ").count()
     //    print(cnt)
     // 拿到两条将要删除的数据
-    val ds = sparkSession.sql("select uuid from hudi_cow_table group by uuid having count(*) > 1").limit(2)
+    //    val ds = sparkSession.sql("select max(uuid) as uuid from hudi_cow_table").limit(1)
     //    print(ds.show())
-    //
-    //    // 执行删除
-    //    val deletes = dataGen.generateDeletes(ds.collectAsList())
+    // 传入需要删除记录的RK 和 partition path
+    val ds = sparkSession.sql("select uuid ,partitionpath  from hudi_cow_table where id = 5 ").limit(1)
+    // 执行删除
+    //    val df1 = ds.toJSON.collectAsList().toString
+    //    print(df1)
 
-    val df = sparkSession.read.json("/tmp/newpeople.json")
+
+    //    val df = sparkSession.read.json("/tmp/newpeople.json")
     //    val df = sparkSession.read.json(sparkSession.sparkContext.parallelize(deletes, 2))
 
+
+    //    val dfResult = df
+    //      .withColumn("uuid", col("id")) // 依据uuid 列进行upsert判断
+    //      .withColumn("partitionpath", concat_ws("/", col("country"), col("city"))) // 增加hudi的分区路径字段
     //
-    df.write.format("hudi").
+    ds.write.format("hudi").
       options(getQuickstartWriteConfigs).
       option(OPERATION_OPT_KEY, "delete").
       option(PRECOMBINE_FIELD_OPT_KEY, "ts").
@@ -190,17 +198,5 @@ object HudiAPI {
       option(HoodieWriteConfig.TABLE_NAME, tableName).
       mode(SaveMode.Append).
       save(hdfsPath)
-    //
-    //    // 向之前一样运行查询
-    val roAfterDeleteViewDF = sparkSession.
-      read.
-      format("hudi").
-      load(hdfsPath + "/*/*/")
-    //
-    roAfterDeleteViewDF.registerTempTable("hudi_trips_snapshot")
-    roAfterDeleteViewDF.createOrReplaceTempView("hudi_delete_table")
-    //    // 应返回 (total - 2) 条记录
-    val cnt = sparkSession.sql("select uuid, partitionpath from hudi_delete_table").count()
-    print(cnt)
   }
 }
