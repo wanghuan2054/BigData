@@ -7,7 +7,9 @@ import org.apache.hudi.QuickstartUtils.getQuickstartWriteConfigs
 import org.apache.hudi.config.{HoodieIndexConfig, HoodieWriteConfig}
 import org.apache.hudi.index.HoodieIndex
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.catalyst.dsl.expressions.StringToAttributeConversionHelper
 import org.apache.spark.sql.functions.{col, concat_ws, lit}
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
 object Hudi_Hive_API {
@@ -22,10 +24,10 @@ object Hudi_Hive_API {
     ssc.hadoopConfiguration.set("dfs.nameservices", "myhadoop")
     // 设置Log Console输出量
     ssc.setLogLevel("ERROR")
-    //        hudiInsertData(sparkSession)
-    //        queryHudiData(sparkSession)
-    hudiUpdateData(sparkSession)
+//    hudiInsertData(sparkSession)
 //    queryHudiData(sparkSession)
+        hudiUpdateData(sparkSession)
+        queryHudiData(sparkSession)
     //    incrQueryHudiData(sparkSession)  // 增量查询hudi数据
     //     rangeQueryHudiData(sparkSession)
     //    deleteDataByRK(sparkSession)
@@ -33,6 +35,7 @@ object Hudi_Hive_API {
 
   // 读取hdfs 文件，写入hudi
   def hudiInsertData(sparkSession: SparkSession): Unit = {
+//    import spark.implicits._
     // 生成提交时间
     val commitTime = System.currentTimeMillis().toString
     // 生成Hudi表的表名
@@ -41,13 +44,19 @@ object Hudi_Hive_API {
     val hdfsPath = "/hudi/hudi_hive_sync"
     // hdfs 路径
     val df = sparkSession.read.json("/tmp/people.json")
-    df.createOrReplaceTempView("people")
-    val sqlDF = sparkSession.sql("SELECT country , city , id , name , age FROM people")
+//    df.createOrReplaceTempView("people")
+//    val sqlDF = sparkSession.sql("SELECT country , city , id , name ,age FROM people")
+//    print(df.show())
+    val sqlDF = df.select("country","city","id","name","age")
+//    df.select($"name", $"age").show()
+
+
     val dfResult = sqlDF
       .withColumn("ts", lit(commitTime))
-      //      .withColumn("uuid", col("id")) // 依据uuid 列进行upsert判断
+//            .withColumn("id", col("id")+"") // 依据uuid 列进行upsert判断
+//      .withColumn("age", col("age")+"")
       .withColumn("partitionpath", concat_ws("/", col("country"), col("city"))) // 增加hudi的分区路径字段
-    //    print(dfResult.show())
+//    print(dfResult.printSchema())
 
     dfResult.write
       .format("org.apache.hudi") // 设置输出格式为hudi
@@ -76,7 +85,7 @@ object Hudi_Hive_API {
       .save(hdfsPath)
 
 
-    dfResult.write
+    /*dfResult.write
       .format("org.apache.hudi") // 设置输出格式为hudi
       // 根据实际vcore 设置，会加快insert 和 upsert 速度
       .option("hoodie.insert.shuffle.parallelism", 8)
@@ -100,7 +109,7 @@ object Hudi_Hive_API {
       //设置索引类型目前有HBASE,INMEMORY,BLOOM,GLOBAL_BLOOM 四种索引 为了保证分区变更后能找到必须设置全局GLOBAL_BLOOM
       .option(HoodieIndexConfig.INDEX_TYPE_PROP, HoodieIndex.IndexType.GLOBAL_BLOOM.name())
       .mode(SaveMode.Overwrite)
-      .save("/hudi/hudi_hive_sync1")
+      .save("/hudi/hudi_hive_sync1")*/
   }
 
   // 读取hudi数据
