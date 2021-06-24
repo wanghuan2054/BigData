@@ -66,6 +66,8 @@ object Hudi_Hive_API {
       .option(TABLE_TYPE_OPT_KEY, MOR_TABLE_TYPE_OPT_VAL) // 指定表为MOR表， 默认为COW
       .option(RECORDKEY_FIELD_OPT_KEY, "id") // 设置主键列名
       .option(PRECOMBINE_FIELD_OPT_KEY, "ts") // 数据更细时间戳
+      // 分区键的生成器 , 指定为NonPartitionedExtractor ，分区字段则失效
+      // hoodie.datasource.write.keygenerator.class =[  hoodie.datasource.hudi.keygen.NonPartitionedExtractor , hoodie.datasource.hudi.keygen.SimplekeyExtractor]
       .option(PARTITIONPATH_FIELD_OPT_KEY, "partitionpath") // 分区列
       .option(HoodieWriteConfig.TABLE_NAME, tableName)
       .option(HIVE_URL_OPT_KEY, "jdbc:hive2://node1:10000") // hiveserver2 地址
@@ -76,6 +78,7 @@ object Hudi_Hive_API {
       // 从partitionpath中提取hive分区对应的值，MultiPartKeysValueExtractor使用的是"/"分割
       // 此处可以自己实现，继承PartitionValueExtractor 重写 extractPartitionValuesInPath(partitionPath: String)方法即可
       // 写法可以点进MultiPartKeysValueExtractor类中查看
+      // hoodie.datasource.hive_sync.partition_extractor_class  = org.apache.hudi.hive.NonPartitionedExtractor
       .option(HIVE_PARTITION_EXTRACTOR_CLASS_OPT_KEY, "org.apache.hudi.hive.MultiPartKeysValueExtractor")
       // 当前数据的分区变更时，数据的分区目录是否变化
       .option(HoodieIndexConfig.BLOOM_INDEX_UPDATE_PARTITION_PATH, "true")
