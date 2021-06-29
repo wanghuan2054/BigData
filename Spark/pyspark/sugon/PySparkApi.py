@@ -132,9 +132,9 @@ def sparkSQL():
     spark.udf.register("add_one", add_one)
     # print(spark.sql("SELECT * from tableA").show())
     # print(spark.sql("SELECT count(*) from tableA").show())
-    # print(spark.sql("SELECT add_one(a) as a_plus_1 , * FROM tableA").show())
-    print(df.selectExpr('add_one(a)').alias('a_plus_1').show())
-    print(df.select(expr('count(*)') > 0).alias('CNT').show())
+    print(spark.sql("SELECT add_one(a) as a_plus_1 , * FROM tableA").show())
+    # print(df.selectExpr('add_one(a)').alias('a_plus_1').show())
+    # print(df.select(expr('count(*)') > 0).alias('CNT').show())
 if __name__ == '__main__':
     spark = SparkSession.builder.getOrCreate()
     # 生成 DataFrame

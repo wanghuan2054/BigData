@@ -49,9 +49,10 @@ def insertDataToMysql():
 
     # 创建spark DataFrame
     # 方式1：list转spark DataFrame
-    l = [(5, 'wang',datetime(2021, 6, 23, 12, 0,8),datetime(2021, 6, 23, 12, 0,9))]
+
+    l = [('wang',datetime(2021, 6, 23, 12, 0,8),datetime(2021, 6, 23, 12, 0,9))]
     # 创建并指定列名
-    final_df = spark.createDataFrame(l, schema=['id', 'name','birthday', 'ts'])
+    final_df = spark.createDataFrame(l, schema=['name','birthday', 'ts'])
 
     # 写入数据库
     final_df.write.jdbc(url=url, table='sugon-hive', mode='append', properties=prop)
@@ -63,6 +64,6 @@ if __name__ == '__main__':
     # 读取mysql数据
     # readMysqlData()
     # 插入mysql数据
-    # insertDataToMysql()
-    connectMyql()
+    insertDataToMysql()
+    # connectMyql()
 
