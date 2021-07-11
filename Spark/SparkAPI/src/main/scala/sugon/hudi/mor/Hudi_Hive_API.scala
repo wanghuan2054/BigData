@@ -24,7 +24,7 @@ object Hudi_Hive_API {
     ssc.setLogLevel("ERROR")
 //    hudiInsertData(sparkSession)
 //    queryHudiData(sparkSession)
-        hudiUpdateData(sparkSession)
+//        hudiUpdateData(sparkSession)
         queryHudiData(sparkSession)
     //    incrQueryHudiData(sparkSession)  // 增量查询hudi数据
     //     rangeQueryHudiData(sparkSession)
@@ -133,7 +133,6 @@ object Hudi_Hive_API {
     val df = sparkSession.read.json("/tmp/newpeople.json")
     df.createOrReplaceTempView("people")
     val sqlDF = sparkSession.sql("SELECT country , city , id , name , age FROM people")
-    sqlDF.le
     val dfResult = sqlDF.withColumn("ts", lit(commitTime))
       //      .withColumn("uuid", col("id")) // 依据uuid 列进行upsert判断
       .withColumn("partitionpath", concat_ws("/", col("country"), col("city"))) // 增加hudi的分区路径字段
