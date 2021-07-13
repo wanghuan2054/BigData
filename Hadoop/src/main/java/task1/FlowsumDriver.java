@@ -1,6 +1,7 @@
 package task1;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -12,15 +13,27 @@ import java.io.IOException;
 public class FlowsumDriver {
     public static void main(String[] args) throws IllegalArgumentException, IOException, ClassNotFoundException, InterruptedException {
 
-//        args = new String[]{"C:\\Users\\49921\\Desktop\\BigData\\Hadoop\\src\\main\\resources\\phone_data.txt", "C:\\Users\\49921\\Desktop\\BigData\\Hadoop\\src\\main\\resources\\result.txt"};
+        args = new String[]{"C:\\Users\\49921\\Desktop\\BigData\\Hadoop\\src\\main\\resources\\phone_data.txt", "C:\\Users\\49921\\Desktop\\BigData\\Hadoop\\src\\main\\resources\\result"};
+//        args = new String[]{"hdfs://192.168.2.100/user/student/wanghuan/phone_data.txt", "hdfs://192.168.2.100/user/student/wanghuan/result"};
 
-
-        args = new String[]{"/user/student/wanghuan/phone_data.txt", "/user/student/wanghuan/result"};
 
         // 1 获取配置信息，或者job对象实例
         Configuration configuration = new Configuration();
+        configuration.set("mapreduce.framework.name","local");
         Job job = Job.getInstance(configuration);
 
+//        Path path = new Path(args[1]);
+//        // 删除hadoop文件
+//        if (path.getFileSystem(configuration).exists(path)) {
+//
+//            FileStatus[] fss = path.getFileSystem(configuration).listStatus(path);
+//            if (fss.length != 0) {
+//                for (FileStatus file : fss) {
+//                    path.getFileSystem(configuration).delete(file.getPath(), true);
+//                }
+//            }
+//            path.getFileSystem(configuration).delete(path, true);
+//        }
         // 6 指定本程序的jar包所在的本地路径
         job.setJarByClass(FlowsumDriver.class);
 
@@ -29,8 +42,8 @@ public class FlowsumDriver {
         job.setReducerClass(FlowCountReducer.class);
 
         // 3 指定mapper输出数据的kv类型
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(FlowBean.class);
+        job.setMapOutputKeyClass(FlowBean.class);
+        job.setMapOutputValueClass(Text.class);
 
         // 4 指定最终输出的数据的kv类型
         job.setOutputKeyClass(Text.class);

@@ -3,6 +3,7 @@ package task1;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -11,7 +12,7 @@ import java.io.IOException;
 // 1 实现writable接口
 @Setter
 @Getter
-public class FlowBean implements Writable {
+public class FlowBean implements WritableComparable<FlowBean> {
     //上传流量
     private long upFlow;
     //下载流量
@@ -50,6 +51,14 @@ public class FlowBean implements Writable {
     }
     @Override
     public String toString() {
-        return upFlow + "\t" + downFlow + "\t" + sumFlow;
+        return upFlow + "\t" + downFlow + "\t" +sumFlow ;
+    }
+
+    @Override
+    public int compareTo(FlowBean o) {
+        //从大到小
+        return (int) (o.sumFlow - this.sumFlow);
+        //从小到大
+//        return (int) (this.sumFlow - o.sumFlow);
     }
 }

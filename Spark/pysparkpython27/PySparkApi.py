@@ -7,8 +7,12 @@ from datetime import datetime, date
 import pandas as pd
 from pyspark.sql import Row
 from pyspark.sql import Column
-from pyspark.sql.functions import pandas_udf
+from pyspark.sql.functions import pandas_udf, split
 from pyspark.sql.functions import expr
+
+pd.set_option('display.max_columns', 1000)
+pd.set_option('display.width', 1000)
+pd.set_option('display.max_colwidth', 1000)
 
 
 # DataFrame Creation
@@ -40,14 +44,15 @@ def createDataFrame():
     # print(df2.show())
 
     # Create a PySpark DataFrame from an RDD consisting of a list of tuples
-    rdd = spark.sparkContext.parallelize([
-        (1, 2., 'string1', date(2000, 1, 1), datetime(2000, 1, 1, 12, 0)),
-        (2, 3., 'string2', date(2000, 2, 1), datetime(2000, 1, 2, 12, 0)),
-        (3, 4., 'string3', date(2000, 3, 1), datetime(2000, 1, 3, 12, 0))
-    ])
-    df3 = spark.createDataFrame(rdd, schema=['a', 'b', 'c', 'd', 'e'])
 
-    return df3
+    pandas_df = pd.DataFrame({
+
+        'c': ['string1 af we    we', 'string2  af we    we', 'string3  af we    we']
+    })
+    # df3 = spark.createDataFrame(rdd, schema=['a'])
+    df2 = spark.createDataFrame(pandas_df)
+
+    return df2
 
 # viewing the data
 def viewingData(df) :
@@ -143,15 +148,18 @@ if __name__ == '__main__':
     spark = SparkSession.builder.getOrCreate()
     # 生成 DataFrame
     df = createDataFrame()
-    df1 = df.alias('df1')
-    df2 = df.alias('df2')
-    cols = ['a', 'b', 'c', 'd', 'e']
+    # df1 = df.alias('df1')
+    # df2 = df.alias('df2')
+    # cols = ['a', 'b', 'c', 'd', 'e']
     # df.a, df.b, df.c, df.d, df.e
-    print df.select(df.a, df.b, (df.a+df.b).alias('TTL'), df.c, df.d, df.e).show()
-    condition = [df1.a == df2.a]
-    print df1
-    df1 = df1.join(df2,condition,'cross').select(df1.a, df1.b, (df1.a+df2.b).alias('TT12L'), df1.c, df1.d, df2.e).show()
-    print df1
+    df.withColumn('split',split(df.c,'\\s+')).write.csv('foo.csv', header=True)
+
+
+    # print df.select(df.a, df.b, (df.a+df.b).alias('TTL'), df.c, df.d, df.e).show()
+    # condition = [df1.a == df2.a]
+    # print df1
+    # df1 = df1.join(df2,condition,'cross').select(df1.a, df1.b, (df1.a+df2.b).alias('TT12L'), df1.c, df1.d, df2.e).show()
+    # print df1
     # 显示DataFrame
     # viewingData(df)
     # selectData(df)

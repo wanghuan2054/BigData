@@ -10,7 +10,7 @@ import java.io.IOException;
  * LongWritable, Text ===> Map输入    <偏移量，手机号>
  * Text, FlowBean  ======> Map的输出：<手机号、流量上传下载总和>
  */
-public class FlowCountMapper extends Mapper<LongWritable, Text, Text, FlowBean> {
+public class FlowCountMapper extends Mapper<LongWritable, Text, FlowBean , Text> {
     Text k = new Text();
     FlowBean v = new FlowBean();
 
@@ -28,9 +28,9 @@ public class FlowCountMapper extends Mapper<LongWritable, Text, Text, FlowBean> 
         //上传和下载 upFlow downFlow
         long upFlow = Long.parseLong(fields[fields.length - 3]);
         long downFlow = Long.parseLong(fields[fields.length - 2]);
-
         k.set(phoneNum);
+        v.set(upFlow,downFlow);
 
-        context.write(k,new FlowBean(upFlow,downFlow));
+        context.write(v,k);
     }
 }
